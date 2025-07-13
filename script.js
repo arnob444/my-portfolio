@@ -1,79 +1,107 @@
-document.addEventListener('input', function() {
-    form = document.getElementById('contactForm');
-    if (form) {
-        form.addEventListener('submit', validateForm);
-    }
+const form = document.getElementById('contactForm');
+const nameInput = document.getElementById('name');
+const emailInput = document.getElementById('email');
+const phoneInput = document.getElementById('phone');
+const passInput = document.getElementById('pass');
+const msgInput = document.getElementById('msg');
+
+nameInput.addEventListener('input', validateName);
+emailInput.addEventListener('input', validateEmail);
+phoneInput.addEventListener('input', validatePhone);
+passInput.addEventListener('input', validatePassword);
+msgInput.addEventListener('input', validateMessage);
+
+form.addEventListener('submit', function (event) {
+	event.preventDefault();
+	if (validateName() && validateEmail() && validatePhone() && validatePassword() && validateMessage()) {
+		alert('Form is valid and ready to submit');
+	}
 });
 
-function validateForm(event) {
-    event.preventDefault();
-    let valid = true;
+function validateName() {
+	const name = nameInput.value.trim();
+	const nameRegex = /^[A-Za-z\s]{3,50}$/;
+	if (!name || !nameRegex.test(name)) {
+		showError(
+			nameInput,
+			'ename',
+			'Enter a valid name (3-50 letters and spaces only)'
+		);
+		return false;
+	} else {
+		clearError(nameInput, 'ename');
+		return true;
+	}
+}
 
-    let name = document.getElementById('name').value.trim();
-    let nameRegex = /^[A-Za-z\s]{3,50}$/;
-    if (!name || !nameRegex.test(name)) {
-        document.getElementById('ename').innerHTML = 'Enter a valid name (3-50 letters and spaces only)';
-        document.getElementById('ename').style.color = 'red';
-        document.getElementById('name').style.border = '2px solid red';
-        document.getElementById('name').style.borderRadius = '30px';
-        valid = false;
-    } else {
-        document.getElementById('ename').innerHTML = '';
-        document.getElementById('name').style.border = '1px solid #ccc';
-    }
+function validateEmail() {
+	const email = emailInput.value.trim();
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	if (!email || !emailRegex.test(email)) {
+		showError(
+			emailInput,
+			'eemail',
+			'Enter a valid email address (e.g., user@domain.com)'
+		);
+		return false;
+	} else {
+		clearError(emailInput, 'eemail');
+		return true;
+	}
+}
 
-    let email = document.getElementById('email').value.trim();
-    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
-        document.getElementById('eemail').innerHTML = 'Enter a valid email address (e.g., user@domain.com)';
-        document.getElementById('eemail').style.color = 'red';
-        document.getElementById('email').style.border = '2px solid red';
-        document.getElementById('email').style.borderRadius = '30px';
-        valid = false;
-    } else {
-        document.getElementById('eemail').innerHTML = '';
-        document.getElementById('email').style.border = '1px solid #ccc';
-    }
+function validatePhone() {
+	const phone = phoneInput.value.trim();
+	const phoneRegex = /^\+8801[3-9]\d{8}$/;
+	if (!phone || !phoneRegex.test(phone)) {
+		showError(
+			phoneInput,
+			'ephone',
+			'Enter a valid BD phone number (e.g., +8801xxxxxxxx)'
+		);
+		return false;
+	} else {
+		clearError(phoneInput, 'ephone');
+		return true;
+	}
+}
 
-    let phone = document.getElementById('phone').value.trim();
-    let phoneRegex = /^\+8801[3-9]\d{8}$/;
-    if (!phone || !phoneRegex.test(phone)) {
-        document.getElementById('ephone').innerHTML = 'Enter a valid BD phone number (e.g., +8801xxxxxxxx)';
-        document.getElementById('ephone').style.color = 'red';
-        document.getElementById('phone').style.border = '2px solid red';
-        document.getElementById('phone').style.borderRadius = '30px';
-        valid = false;
-    } else {
-        document.getElementById('ephone').innerHTML = '';
-        document.getElementById('phone').style.border = '1px solid #ccc';
-    }
+function validatePassword() {
+	const pass = passInput.value;
+	const passRegex =
+		/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+	if (!pass || !passRegex.test(pass)) {
+		showError(
+			passInput,
+			'epass',
+			'Password must be 8+ chars with uppercase, lowercase, number, and special char'
+		);
+		return false;
+	} else {
+		clearError(passInput, 'epass');
+		return true;
+	}
+}
 
-    let pass = document.getElementById('pass').value;
-    let passRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    if (!pass || !passRegex.test(pass)) {
-        document.getElementById('epass').innerHTML = 'Password must be 8+ chars with uppercase, lowercase, number, and special char';
-        document.getElementById('epass').style.color = 'red';
-        document.getElementById('pass').style.border = '2px solid red';
-        document.getElementById('pass').style.borderRadius = '30px';
-        valid = false;
-    } else {
-        document.getElementById('epass').innerHTML = '';
-        document.getElementById('pass').style.border = '1px solid #ccc';
-    }
+function validateMessage() {
+	const msg = msgInput.value.trim();
+	if (!msg || msg.length < 10 || msg.length > 500) {
+		showError(msgInput, 'emsg', 'Message must be 10-500 characters long');
+		return false;
+	} else {
+		clearError(msgInput, 'emsg');
+		return true;
+	}
+}
 
-    let msg = document.getElementById('msg').value.trim();
-    if (!msg || msg.length < 10 || msg.length > 500) {
-        document.getElementById('emsg').innerHTML = 'Message must be 10-500 characters long';
-        document.getElementById('emsg').style.color = 'red';
-        document.getElementById('msg').style.border = '2px solid red';
-        document.getElementById('msg').style.borderRadius = '30px';
-        valid = false;
-    } else {
-        document.getElementById('emsg').innerHTML = '';
-        document.getElementById('msg').style.border = '1px solid #ccc';
-    }
+function showError(inputEl, errorId, message) {
+	document.getElementById(errorId).innerHTML = message;
+	document.getElementById(errorId).style.color = 'red';
+	inputEl.style.border = '2px solid red';
+	inputEl.style.borderRadius = '30px';
+}
 
-    if (valid) {
-        alert('Form is valid and ready to submit');
-    }
+function clearError(inputEl, errorId) {
+	document.getElementById(errorId).innerHTML = '';
+	inputEl.style.border = '1px solid #ccc';
 }
