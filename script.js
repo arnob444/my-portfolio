@@ -11,12 +11,15 @@ phoneInput.addEventListener('input', validatePhone);
 passInput.addEventListener('input', validatePassword);
 msgInput.addEventListener('input', validateMessage);
 
-form.addEventListener('submit', function (event) {
+function FormSubmit(event) {
 	event.preventDefault();
 	if (validateName() && validateEmail() && validatePhone() && validatePassword() && validateMessage()) {
-		alert('Form is valid and ready to submit');
+		return true; 
+	} else {
+		event.preventDefault(); 
+		return false;
 	}
-});
+};
 
 function validateName() {
 	const name = nameInput.value.trim();
